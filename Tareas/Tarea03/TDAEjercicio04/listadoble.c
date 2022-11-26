@@ -65,6 +65,7 @@ ListaDoble * listaDoble(){
     lista = (ListaDoble *) malloc(sizeof(ListaDoble));
     if(lista == NULL) return NULL; // En caso de que no se le pueda asignar memoria
     lista->cabecera = NULL; // Asignamos valores
+    lista->final = NULL;
 
     return lista;
 }
@@ -73,6 +74,7 @@ void insertar_inicio(ListaDoble * lista){
     Nodo * nuevo = crearNodo();
     if(lista->cabecera == NULL){
         lista->cabecera = nuevo;
+        lista->final = nuevo;
     } else{
         lista->cabecera->previo = nuevo;
         nuevo->siguiente = lista->cabecera;
@@ -84,13 +86,11 @@ void insertar_final(ListaDoble * lista){
     Nodo * nuevo = crearNodo();
     if(lista->cabecera == NULL){
         lista->cabecera = nuevo;
+        lista->final = nuevo;
     } else{
-        Nodo * temp = lista->cabecera;
-        while (temp->siguiente != NULL){
-            temp = temp->siguiente;
-        }
-        temp->siguiente = nuevo;
-        nuevo->previo = temp;
+        lista->final->siguiente = nuevo;
+        nuevo->previo = lista->final;
+        lista->final = nuevo;
     }
 }
 
@@ -119,16 +119,15 @@ void insertar_intermedio(ListaDoble * lista, int pos){
         Nodo * temp = lista->cabecera;
         if(lista->cabecera == NULL) {
             lista->cabecera = nuevo;
+            lista->final = nuevo;
         } else if(pos == 0){
             nuevo->siguiente = lista->cabecera;
             lista->cabecera->previo = nuevo;
             lista->cabecera = nuevo;
         } else if(pos == noNodos){
-            while(temp->siguiente != NULL){
-                temp = temp->siguiente;
-            }
-            nuevo->previo = temp;
-            temp->siguiente = nuevo;
+            lista->final->siguiente = nuevo;
+            nuevo->previo = lista->final;
+            lista->final = nuevo;
         } else{
             int i=0;
             while(i<pos-1){
@@ -150,6 +149,7 @@ void borrar_inicio(ListaDoble * lista){
         Nodo * temp = lista->cabecera;
         if(temp->siguiente == NULL){
             lista->cabecera = NULL;
+            lista->final = NULL;
         } else{
             lista->cabecera = lista->cabecera->siguiente;
             lista->cabecera->previo = NULL;
@@ -157,7 +157,6 @@ void borrar_inicio(ListaDoble * lista){
         free(temp);
     }
 }
-
 
 void borrar_final(ListaDoble * lista) {
     Nodo *temp; // Nodo a borrar
@@ -171,9 +170,11 @@ void borrar_final(ListaDoble * lista) {
         }
         if (temp == lista->cabecera) {
             lista->cabecera = NULL;
+            lista->final = NULL;
         } else {
             /* Desconectar el enlace */
-            temp->previo->siguiente = NULL;
+            lista->final = temp->previo;
+            lista->final->siguiente = NULL;
         }
         free(temp); // Borramos el último
     }
@@ -194,6 +195,7 @@ void borrar_intermedio(ListaDoble * lista, int pos){
                 temp = lista->cabecera;
                 if(temp->siguiente == NULL){
                     lista->cabecera = NULL;
+                    lista->final = NULL;
                 } else{
                     lista->cabecera = lista->cabecera->siguiente;
                     lista->cabecera->previo = NULL;
@@ -208,7 +210,9 @@ void borrar_intermedio(ListaDoble * lista, int pos){
                 }
                 Nodo * borrado = temp->siguiente; // (pos)-th nodo
                 if(borrado->siguiente == NULL){
-                    borrado->previo->siguiente = NULL;
+                    // En este caso llegamos al ultimo nodo
+                    lista->final = borrado->previo;
+                    lista->final->siguiente = NULL;
                 } else{
                     temp->siguiente = borrado->siguiente; // (pos+1)-th nodo
                     borrado->siguiente->previo = temp;
@@ -240,20 +244,17 @@ void desplegar_adelante(ListaDoble * lista){
 }
 
 void desplegar_atras(ListaDoble * lista){
-    Nodo * temp = lista->cabecera;
+    Nodo * temp = lista->final;
     if(temp == NULL){
         printf("Lista Vacía!!\n");
         return;
     }
-    // Ir al ultimo nodo
-    while(temp->siguiente != NULL){
-        temp = temp->siguiente;
-    }
+    // Recorremos la lista desde el último nodo
     while (temp != NULL){
-        printf("Nombre: %s ", temp->dato.nombre);
-        printf("Apellido Paterno: %s ", temp->dato.ape_pat);
-        printf("Apellido Materno: %s ", temp->dato.ape_mat);
-        printf("Fecha de Vuelo: %.2d/%.2d/%.2d ", temp->dato.fecha_vuelo.dia, temp->dato.fecha_vuelo.mes, temp->dato.fecha_vuelo.anio);
+        printf("Nombre: %s", temp->dato.nombre);
+        printf("Apellido Paterno: %s", temp->dato.ape_pat);
+        printf("Apellido Materno: %s", temp->dato.ape_mat);
+        printf("Fecha de Vuelo: %.2d/%.2d/%.2d", temp->dato.fecha_vuelo.dia, temp->dato.fecha_vuelo.mes, temp->dato.fecha_vuelo.anio);
         printf("\nNumero de Vuelo: %d", temp->dato.numero_vuelo);
         printf("\nNumero de Asiento: %d", temp->dato.numero_asiento);
         printf("\nLugar de Origen: %s", temp->dato.origen);

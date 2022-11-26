@@ -30,11 +30,11 @@ int main() {
         clrscr();
         printf("***** Aerolinea MAC FES Acatlan ******\n\n");
         printf("Seleccione una Opcion: ");
-        printf("\n[1] Ingresar Pasajero");
-        printf("\n[2] Remover Pasajero");
-        printf("\n[3] Listar Pasajeros");
-        printf("\n[4] Listar Pasajeros Inverso");
-        printf("\n[5] Buscar por Numero de Vuelo");
+        printf("\n[1] Ingresar Vuelo");
+        printf("\n[2] Cancelar Vuelo");
+        printf("\n[3] Listar Vuelos");
+        printf("\n[4] Listar Vuelos Inverso");
+        printf("\n[5] Buscar Vuelo");
         printf("\n[6] Salir del Programa");
         printf("\nOpcion: ");
         scanf("%d", &opcion);
@@ -78,7 +78,7 @@ int main() {
                     case 2: borrar_final(ld);
                         printf("\nSe Removio informacion Correctamente ...\n");
                         break;
-                    case 3: printf("\nIngrese posicion a ingresar: ");
+                    case 3: printf("\nIngrese posicion a remover: ");
                         scanf("%d", &posicion);
                         fflush(stdin);
                         borrar_intermedio(ld, posicion);
@@ -88,12 +88,12 @@ int main() {
                 }
                 break;
             case 3:	clrscr();
-                printf("\n\nListado de Pasajeros: \n");
+                printf("\n\nListado de Pasajeros: \n\n");
                 desplegar_adelante(ld);
                 printf("Numero de Registros: %d", no_nodos(ld));
                 break;
             case 4:	clrscr();
-                printf("\n\nLista de Pasajeros (orden Inverso): \n");
+                printf("\n\nLista de Pasajeros (orden Inverso): \n\n");
                 desplegar_atras(ld);
                 printf("Numero de Registros: %d", no_nodos(ld));
                 break;
